@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { data } from "./data";
+import CategoryButtons from "./components/CategoryButtons";
+import Gallery from "./components/Gallery";
 
 function App() {
+  const [galleryItems, setGalleryItems] = useState(data);
+  const [query, setQuery] = useState("");
+
+  const handleQueryChange = (e) => {
+    const { value } = e.target;
+    setQuery(value);
+  };
+
+  const categories = ["all", ...new Set(data.map((item) => item.category))];
+
+  const filterItems = (category) => {
+    if (category === "all") {
+      setGalleryItems(data);
+      return;
+    }
+    const filteredItems = data.filter((item) => item.category === category);
+    setGalleryItems(filteredItems);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main>
+      <CategoryButtons categories={categories} filterItems={filterItems} />
+      <section className="section-center">
+        <Gallery
+          galleryItems={galleryItems}
+          query={query}
+          handleQueryChange={handleQueryChange}
+        />
+      </section>
+    </main>
   );
 }
 
